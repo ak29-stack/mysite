@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>mysite</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="top.html" class="site-title">mysite</a>
+      <button class="hamburger" onclick="toggleMenu()" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+<div class="filter-bar">
+  <span id="modeLabel">OR</span>
+  <button onclick="toggleMode()">切替</button>
+</div>
+<div class="tag-bar" id="tagBar"></div>
+
+  <nav class="nav-menu" id="navMenu">
+    <ul>
+      <li><a href="top.html">トップ</a></li>
+      <li><a href="work1/index.html">アドラステイアのまなざし</a></li>
+      <li><a href="chara.html">キャラクター</li>
+      <li><a href="notice.html">注意事項</a></li>
+    </ul>
+  </nav>
+
+  <main class="main">
+    <p class="site-desc">夢小説置き場</p>
+
+    <div class="works-grid" id="worksGrid"></div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

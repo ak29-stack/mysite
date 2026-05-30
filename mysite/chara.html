@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>キャラクター - mysite</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+ 
+  <header class="header">
+    <div class="header-inner">
+      <a href="top.html" class="site-title">mysite</a>
+      <button class="hamburger" onclick="toggleMenu()" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+ 
+  <nav class="nav-menu" id="navMenu">
+    <ul>
+      <li><a href="top.html">トップ</a></li>
+      <li><a href="work1/index.html">作品タイトル1</a></li>
+      <li><a href="chara.html">キャラクター</a></li>
+      <li><a href="notice.html">注意事項</a></li>
+    </ul>
+  </nav>
+ 
+  <main class="main">
+    <h1 class="page-title">キャラクター</h1>
+    <div class="works-grid" id="charaGrid"></div>
+  </main>
+ 
+  <script src="script.js"></script>
+</body>
+</html>

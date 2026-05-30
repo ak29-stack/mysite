@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>我が手に刃を、君に愛を。 - mysite</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="../top.html" class="site-title">mysite</a>
+      <button class="hamburger" onclick="toggleMenu()" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="nav-menu" id="navMenu">
+    <ul>
+      <li><a href="../top.html">トップ</a></li>
+      <li><a href="../work1/index.html">アドラステイアのまなざし</a></li>
+      <li><a href="../work2/index.html">我が手に刃を、君に愛を。</a></li>
+      <li><a href="../chara.html">キャラクター一覧</a></li>
+      <li><a href="../notice.html">注意事項</a></li>
+    </ul>
+  </nav>
+
+  <main class="main">
+    <h1 class="page-title">我が手に刃を、君に愛を。</h1>
+
+    <div class="work-info">
+      <p class="work-info-meta">ONE PIECE　エース</p>
+      <p class="work-info-summary">
+        あらすじ</p>
+    </div>
+
+    <div class="ep-list" id="epList"></div>
+  </main>
+
+  <script src="../script.js"></script>
+  <script>
+    fetch('episodes.json')
+  .then(res => res.json())
+  .then(data => {
+    const epList = document.getElementById('epList');
+    data.forEach(ep => {
+      epList.innerHTML += `
+        <a href="${ep.file}" class="ep-item">
+          <span class="ep-number">${ep.number}</span>
+          <span class="ep-title">${ep.title}</span>
+        </a>
+      `;
+    });
+  });
+  </script>
+</body>
+</html>

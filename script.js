@@ -50,6 +50,7 @@ if (pageElements.length > 0) {
     indicator.textContent = `${index + 1} / ${pageElements.length}`;
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === pageElements.length - 1;
+    window.scrollTo(0,0);
   }
 
   prevBtn.addEventListener('click', () => {

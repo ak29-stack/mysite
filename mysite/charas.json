@@ -1,0 +1,19 @@
+[
+  {
+    "id": "chara1",
+    "name": "キャラ名",
+    "ruby": "ふりがな",
+    "image": "",
+    "tags": ["タグ1", "タグ2"],
+    "summary": "一言紹介をここに書く。",
+    "details": [
+      { "label": "別名義", "value": "〇〇" },
+      { "label": "性別", "value": "女性" },
+      { "label": "年齢", "value": "〇〇歳" },
+      { "label": "所属", "value": "〇〇" },
+      { "label": "能力", "value": "〇〇" },
+      { "label": "イメソン", "value": "曲名 / アーティスト" }
+    ],
+    "description": "詳細情報をここに書く。"
+  }
+]

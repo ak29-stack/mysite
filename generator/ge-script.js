@@ -112,7 +112,7 @@ function generate() {
     <ul>
       <li><a href="../top.html">トップ</a></li>
       <li><a href="../${workFolder}/index.html">${workTitle}</a></li>
-      <li><a href="../chara.html">キャラクター</li>
+      <li><a href="../chara.html">キャラクター一覧</a></li>
       <li><a href="../notice.html">注意事項</a></li>
     </ul>
   </nav>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>キャラページジェネレーター</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+      background: #fff;
+      color: #333;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .desc {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+
+    .section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus { border-color: #333; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 14px;
+      font-size: 14px;
+      font-family: inherit;
+      line-height: 2;
+      resize: vertical;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus { border-color: #333; }
+
+    .detail-item {
+      display: grid;
+      grid-template-columns: 1fr 2fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .detail-item input { margin-bottom: 0; }
+
+    .btn-remove {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #999;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-remove:hover { color: #e00; border-color: #e00; }
+
+    .btn-add {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 13px;
+      color: #555;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .btn-add:hover { background: #f5f5f5; }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    button {
+      padding: 10px 28px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .btn-generate {
+      background: #333;
+      color: #fff;
+    }
+    .btn-generate:hover { background: #555; }
+
+    .btn-download {
+      background: #fff;
+      color: #333;
+      border: 1px solid #ccc;
+    }
+    .btn-download:hover { background: #f5f5f5; }
+    .btn-download:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-json {
+      background: #fff;
+      color: #333;
+      border: 1px solid #ccc;
+    }
+    .btn-json:hover { background: #f5f5f5; }
+    .btn-json:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-clear {
+      background: #fff;
+      color: #999;
+      border: 1px solid #ddd;
+      margin-left: auto;
+    }
+    .btn-clear:hover { background: #f5f5f5; color: #666; }
+
+    .output-area {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 16px;
+      font-size: 12px;
+      font-family: monospace;
+      line-height: 1.8;
+      min-height: 120px;
+      color: #555;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 6px;
+    }
+
+    .notice {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 32px;
+      line-height: 1.8;
+    }
+
+    .tab-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      padding: 6px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      background: #fff;
+      color: #888;
+    }
+
+    .tab-btn.active {
+      background: #333;
+      color: #fff;
+      border-color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>キャラページジェネレーター</h1>
+    <p class="desc">必要事項を入力して「生成する」を押すと、HTMLファイルとJSONデータを同時に生成します。</p>
+
+    <div class="section">
+      <p class="section-title">サイト情報</p>
+      <div class="field-row">
+        <div class="field">
+          <label>サイト名</label>
+          <input type="text" id="siteName" placeholder="mysite">
+        </div>
+        <div class="field">
+          <label>作品タイトル（メニュー用）</label>
+          <input type="text" id="workTitle" placeholder="作品タイトル1">
+        </div>
+      </div>
+      <div class="field">
+        <label>作品フォルダ名</label>
+        <input type="text" id="workFolder" placeholder="work1">
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">キャラクター基本情報</p>
+      <div class="field-row">
+        <div class="field">
+          <label>キャラID（ファイル名になります）</label>
+          <input type="text" id="charaId" placeholder="chara1">
+        </div>
+        <div class="field">
+          <label>保存ファイル名</label>
+          <input type="text" id="fileName" placeholder="chara1.html">
+          <p class="hint">※ chara/フォルダに置いてください</p>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>キャラ名</label>
+          <input type="text" id="charaName" placeholder="シャルロット・ローゼンベルク">
+        </div>
+        <div class="field">
+          <label>ふりがな</label>
+          <input type="text" id="charaRuby" placeholder="しゃるろっと・ろーぜんべるく">
+        </div>
+      </div>
+      <div class="field">
+        <label>タグ（カンマ区切り）</label>
+        <input type="text" id="charaTags" placeholder="オリキャラ, 主人公">
+      </div>
+      <div class="field">
+        <label>一言紹介</label>
+        <input type="text" id="charaSummary" placeholder="傲岸不遜じゃじゃ馬お嬢">
+      </div>
+      <div class="field">
+        <label>画像ファイル名（なければ空欄）</label>
+        <input type="text" id="charaImage" placeholder="chara1.jpg">
+        <p class="hint">※ img/フォルダに置いた画像のファイル名を入力</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-title">詳細項目</p>
+      <div id="detailList"></div>
+      <button class="btn-add" onclick="addDetail()">＋ 項目を追加</button>
+    </div>
+
+    <div class="section">
+      <p class="section-title">詳細情報（本文）</p>
+      <textarea id="charaDesc" rows="8" placeholder="キャラクターの詳細情報をここに書く。"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-generate" onclick="generate()">生成する</button>
+      <button class="btn-download" id="dlBtn" onclick="downloadHTML()" disabled>HTMLをDL</button>
+      <button class="btn-json" id="jsonBtn" onclick="downloadJSON()" disabled>JSONをDL</button>
+      <button class="btn-clear" onclick="clearAll()">クリア</button>
+    </div>
+
+    <div class="section">
+      <p class="section-title">生成結果</p>
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchTab('html')">HTML</button>
+        <button class="tab-btn" onclick="switchTab('json')">JSON</button>
+      </div>
+      <div class="output-area" id="output">ここに生成結果が表示されます</div>
+    </div>
+
+    <p class="notice">
+      ※ HTMLは chara/ フォルダに、JSONの内容は charas.json に追記してください。<br>
+      ※ このツールはブラウザ上で動作します。入力内容はどこにも送信されません。
+    </p>
+  </div>
+
+  <script>
+    let generatedHTML = '';
+    let generatedJSON = '';
+    let currentTab = 'html';
+
+    // 初期項目
+    window.onload = () => {
+      const defaults = ['別名義', '性別', '年齢', '所属', '能力', 'イメソン'];
+      defaults.forEach(label => addDetail(label));
+    };
+
+    function addDetail(label = '') {
+      const list = document.getElementById('detailList');
+      const div = document.createElement('div');
+      div.className = 'detail-item';
+      div.innerHTML = `
+        <input type="text" placeholder="項目名" value="${label}">
+        <input type="text" placeholder="内容">
+        <button class="btn-remove" onclick="this.parentElement.remove()">削除</button>
+      `;
+      list.appendChild(div);
+    }
+
+    function getDetails() {
+      const items = document.querySelectorAll('.detail-item');
+      const result = [];
+      items.forEach(item => {
+        const inputs = item.querySelectorAll('input');
+        const label = inputs[0].value.trim();
+        const value = inputs[1].value.trim();
+        if (label) result.push({ label, value });
+      });
+      return result;
+    }
+
+    function generate() {
+      const siteName = document.getElementById('siteName').value || 'mysite';
+      const workTitle = document.getElementById('workTitle').value || '作品タイトル1';
+      const workFolder = document.getElementById('workFolder').value || 'work1';
+      const charaId = document.getElementById('charaId').value || 'chara1';
+      const charaName = document.getElementById('charaName').value || 'キャラ名';
+      const charaRuby = document.getElementById('charaRuby').value || '';
+      const charaTags = document.getElementById('charaTags').value
+        .split(',').map(t => t.trim()).filter(t => t);
+      const charaSummary = document.getElementById('charaSummary').value || '';
+      const charaImage = document.getElementById('charaImage').value.trim();
+      const charaDesc = document.getElementById('charaDesc').value;
+      const details = getDetails();
+
+      // テーブルHTML生成
+      const tableRows = details.map(d => `
+          <tr>
+            <th>${d.label}</th>
+            <td>${d.value}</td>
+          </tr>`).join('');
+
+      // 画像HTML
+      const imageHTML = charaImage
+        ? `<div class="chara-image-wrap">
+        <img src="../img/${charaImage}" alt="${charaName}" class="chara-image">
+      </div>`
+        : `<div class="chara-image-wrap no-image"></div>`;
+
+      // 詳細テキスト→段落
+      const descHTML = charaDesc.trim()
+        .split(/\n\s*\n/)
+        .filter(p => p.trim())
+        .map(p => `      <p>${p.trim().replace(/\n/g, '<br>')}</p>`)
+        .join('\n');
+
+      generatedHTML = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>${charaName} - ${siteName}</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="../top.html" class="site-title">${siteName}</a>
+      <button class="hamburger" onclick="toggleMenu()" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="nav-menu" id="navMenu">
+    <ul>
+      <li><a href="../top.html">トップ</a></li>
+      <li><a href="../${workFolder}/index.html">${workTitle}</a></li>
+      <li><a href="../chara.html">キャラクター</a></li>
+      <li><a href="../notice.html">注意事項</a></li>
+    </ul>
+  </nav>
+
+  <main class="main">
+
+    <div class="chara-header">
+      ${imageHTML}
+      <div class="chara-info">
+        <h1 class="chara-name">
+          ${charaName}${charaRuby ? `<span class="chara-ruby">${charaRuby}</span>` : ''}
+        </h1>
+        ${charaSummary ? `<p class="chara-summary">${charaSummary}</p>` : ''}
+        <table class="chara-table">
+          ${tableRows}
+        </table>
+      </div>
+    </div>
+
+    <div class="chara-description">
+      <h2 class="chara-desc-title">詳細</h2>
+${descHTML}
+    </div>
+
+  </main>
+
+  <script src="../script.js"><\/script>
+</body>
+</html>`;
+
+      // JSON生成
+      const jsonObj = {
+        id: charaId,
+        name: charaName,
+        ruby: charaRuby,
+        image: charaImage ? `../img/${charaImage}` : '',
+        tags: charaTags,
+        summary: charaSummary,
+        details: details
+      };
+      generatedJSON = JSON.stringify(jsonObj, null, 2);
+
+      document.getElementById('output').textContent =
+        currentTab === 'html' ? generatedHTML : generatedJSON;
+      document.getElementById('dlBtn').disabled = false;
+      document.getElementById('jsonBtn').disabled = false;
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', (i === 0 && tab === 'html') || (i === 1 && tab === 'json'));
+      });
+      if (!generatedHTML) return;
+      document.getElementById('output').textContent =
+        tab === 'html' ? generatedHTML : generatedJSON;
+    }
+
+    function downloadHTML() {
+      if (!generatedHTML) return;
+      const fileName = document.getElementById('fileName').value || 'chara.html';
+      const blob = new Blob([generatedHTML], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function downloadJSON() {
+      if (!generatedJSON) return;
+      const blob = new Blob([generatedJSON], { type: 'application/json;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'chara-entry.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function clearAll() {
+      ['siteName','workTitle','workFolder','charaId','fileName','charaName','charaRuby',
+       'charaTags','charaSummary','charaImage','charaDesc'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('detailList').innerHTML = '';
+      const defaults = ['別名義', '性別', '年齢', '所属', '能力', 'イメソン'];
+      defaults.forEach(label => addDetail(label));
+      document.getElementById('output').textContent = 'ここに生成結果が表示されます';
+      document.getElementById('dlBtn').disabled = true;
+      document.getElementById('jsonBtn').disabled = true;
+      generatedHTML = '';
+      generatedJSON = '';
+    }
+  </script>
+</body>
+</html>
